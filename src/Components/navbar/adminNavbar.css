@@ -1,0 +1,45 @@
+/* Hilangkan style tombol admin agar sama seperti link nav biasa */
+.dashboard-btn {
+    background: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    box-shadow: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Efek hover sama dengan link nav lainnya */
+.dashboard-btn:hover {
+    color: #009cc4;
+    transform: none;
+}
+
+/* Agar sejajar dengan menu lainnya */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* jarak antar menu */
+}
+
+.nav-links a,
+.nav-links .dashboard-btn {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Warna aktif */
+.nav-links a.active,
+.nav-links .dashboard-btn.active {
+    color: white;
+}
+
+/* Hover untuk semua item nav */
+.nav-links a:hover,
+.nav-links .dashboard-btn:hover {
+    color: #009cc4;
+}

@@ -1,0 +1,9 @@
+/* Login Page Container */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #B3E5FC 0%, #E1F5FE 100%);
+    padding: 20px;
+}

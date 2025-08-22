@@ -1,0 +1,98 @@
+ .content-title {
+    background-color: white;
+    width: 1400px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 500px;
+}
+
+.content-title h1{
+    margin-left: 100px;
+    
+}
+.content-title p{
+    margin-left: 100px;
+}
+
+.carirumah-container {
+    max-width: 1400px;
+    margin-left: 20px;
+}
+
+.search-section {
+  padding: 10px 75px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.search-box-carirumah {
+  display: flex;
+  background-color: white;
+  border-radius: 8px;
+  height: 40px;
+  padding: 2px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding-left: 8px;
+}
+
+.search-button {
+  background-color: #00849C;
+  color: white;
+  border: none;
+
+  border-radius: 6px;
+  cursor: pointer;
+  height: 35px;
+  font-weight: bold;
+}
+
+.filter-button {
+  background-color: #e0f2f5;
+  border: 1px solid #999;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+} 
+.custom-pagination .page-item {
+  margin: 0 6px;
+}
+
+.custom-pagination .page-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50% !important;
+  border: 2px solid #005A71;
+  color: #005A71;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-weight: 600;
+  background-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.custom-pagination .page-link:hover {
+  background-color: #e0f7fa;
+  text-decoration: none;
+}
+
+.custom-pagination .page-item.active .page-link {
+  background-color: #005A71;
+  color: white;
+  border-color: #005A71;
+}
+

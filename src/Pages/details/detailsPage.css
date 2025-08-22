@@ -1,0 +1,14 @@
+.page-wrapper {
+    padding-top: 80px; /* sesuaikan dengan tinggi navbar */
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background-color: #d7f7ff;
+    margin-bottom: 30px;
+  }
+
+.footer {
+    background-color: black;
+    width: 100%;
+    /* margin-top: 50px; */
+  }

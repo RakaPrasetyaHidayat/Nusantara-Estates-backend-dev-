@@ -1,0 +1,327 @@
+/* Reset dan base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-table-page {
+  min-height: 100vh;
+  background-color: #B8E6FF;
+  position: relative; /* Memastikan positioning context yang benar */
+}
+
+/* Navbar styles are now in AdminNavbar component */
+
+/* Main Content */
+.admin-content {
+  padding: 120px 40px 40px 40px; /* Sesuaikan dengan tinggi AdminNavbar */
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  padding: 15px 0;
+  background-color: #007F9F;
+  color: #ffffff;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Container */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 3px solid #007F9F;
+  border-top: none;
+}
+
+/* Table Styles */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: #F8F9FA;
+  padding: 18px 24px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.admin-table td {
+  padding: 24px 16px; /* Mengurangi padding horizontal untuk memberikan lebih banyak ruang */
+  border-bottom: 1px solid #F0F0F0;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #FAFAFA;
+}
+
+/* Image Cell */
+.image-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-image {
+  width: 100px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+}
+
+/* Sortable column */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.sortable:hover {
+  color: #1976D2;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0; /* Tambahan padding untuk memastikan tombol tidak terpotong */
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  width: 80px;
+  transition: all 0.2s ease;
+}
+
+.btn-detail {
+  background-color: #17A2B8;
+}
+
+.btn-detail:hover {
+  background-color: #138496;
+}
+
+.btn-hapus {
+  background-color: #DC3545;
+}
+
+.btn-hapus:hover {
+  background-color: #C82333;
+}
+
+.btn-edit {
+  background-color: #28A745;
+  position: relative; /* Memastikan tombol tidak terhalang */
+  z-index: 1; /* Z-index untuk memastikan tombol terlihat */
+}
+
+.btn-edit:hover {
+  background-color: #218838;
+}
+
+/* Modal Styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002; /* Lebih tinggi dari navbar admin */
+}
+
+.modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 350px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin: 0 0 15px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal p {
+  margin: 0 0 25px;
+  font-size: 16px;
+  color: #666;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-ya,
+.btn-tidak {
+  padding: 10px 20px;
+  border: 2px solid #007F9F;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-ya {
+  background-color: #007F9F;
+  color: white;
+}
+
+.btn-ya:hover {
+  background-color: #006080;
+  border-color: #006080;
+}
+
+.btn-tidak {
+  background-color: white;
+  color: #007F9F;
+}
+
+.btn-tidak:hover {
+  background-color: #007F9F;
+  color: white;
+}
+
+/* Bottom Footer */
+.bottom-footer {
+  background-color: #333333;
+  padding: 20px 40px;
+  margin-top: 40px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo-circle {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #007F9F 0%, #005f7f 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.footer-logo-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.footer-menu {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-menu li a {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-menu li a:hover {
+  color: #B8E6FF;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-content {
+    padding: 140px 20px 20px 20px; /* Padding-top lebih besar untuk mobile karena navbar responsive */
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .admin-table {
+    min-width: 800px;
+  }
+  
+  .footer-container {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .footer-menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-menu {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+

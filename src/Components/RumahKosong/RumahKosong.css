@@ -1,0 +1,282 @@
+body {
+  background: #D7F7FF;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+
+}
+
+.container-card {
+    width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px;
+    background-color: #D7F7FF;
+
+  }
+  
+  .tipe-header {
+    text-align: left;
+    padding-left: 16px;
+    margin-left: 35px;
+  }
+  
+  .section-title {
+    text-align: center;
+    color: #23455b;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .section-subtitle {
+    text-align: center;
+    color: #23455b;
+    margin-bottom: 32px;
+    margin-top: 4px;
+    font-size: 0.95rem;
+  }
+
+  /* Loading and Error States */
+  .loading-state, .error-state, .no-results {
+    text-align: center;
+    padding: 40px 20px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .loading-state p {
+    color: #23455b;
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .error-state h3 {
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+
+  .error-state p {
+    color: #666;
+    margin: 0;
+  }
+
+  .no-results h3 {
+    color: #23455b;
+    margin-bottom: 10px;
+  }
+
+  .no-results p {
+    color: #666;
+    margin: 0;
+  }
+  
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    width: 100%;
+    max-width: 280px;
+    height: 453px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    background: linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .card:hover .card-body h3,
+  .card:hover .card-body p,
+  .card:hover .status {
+    color: #1565C0;
+  }
+
+  .card:hover .info-detail span {
+    color: #0D47A1;
+  }
+
+  .card:hover .btn-detail {
+    background: #fff;
+    color: #0D47A1;
+    border-color: #0D47A1;
+    font-weight: 600;
+  }
+
+  .card:hover .btn-chat {
+    background: #0D47A1;
+    transform: scale(1.05);
+  }
+  
+  .card img {
+    width: 100%;
+    /* height: 282px; */
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover img {
+    transform: scale(1.05);
+  }
+  
+  .card-body {
+    padding: 18px 16px 12px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-body h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.1rem;
+    color: #222;
+  }
+  
+  .card-body p {
+    margin: 0 0 2px 0;
+    color: #444;
+    font-size: 0.98rem;
+  }
+  
+  .status {
+    color: #23455b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  
+  .card-actions {
+    
+    display: flex;
+    margin-top: 30px;
+    gap: 8px;
+  }
+  
+  .btn-detail, .btn-chat {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.97rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-detail {
+  background: #fff;
+  color: #23455b;
+  border: 1.5px solid #23455b;
+  width: 50%;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  white-space: nowrap;      /* ⬅️ Jangan pecah ke bawah */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  display: inline-block;
+}
+  
+  .btn-detail:hover {
+    background: #e0f7fa;
+  }
+  
+  .btn-chat {
+    background: #005A71;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+     width: 50%;
+  }
+  
+  .btn-chat:hover {
+    background: #23455b;
+  }
+  
+  .btn-lihat-lainnya {
+    display: block;
+    margin: 0 auto 32px auto;
+    background: #23455b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-lihat-lainnya:hover {
+    background: #23455b;
+  }
+
+ .info-detail {
+  display: flex;
+  justify-content: space-between;  
+  color: #007F9F;
+  margin-bottom: 4px;
+}
+
+.info-detail span {
+  margin-right: 10px;
+  color: #007F9F;
+}
+
+/* Responsive design untuk grid 4 kolom */
+@media (max-width: 1200px) {
+  .card-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .card-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .card-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .container-card {
+    width: 100%;
+    padding: 16px;
+  }
+}
+
+/* No Results Message */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-results h3 {
+  color: #23455b;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.no-results p {
+  color: #777;
+  font-size: 1rem;
+}

@@ -1,0 +1,195 @@
+* {
+    margin: 0;
+}
+
+/* Memastikan hero section memenuhi seluruh layar */
+body, html {
+    width: 100%;
+    overflow-x: hidden;
+}
+.hero-container {
+    display: flex;
+    justify-content: center;   
+    min-height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom right, #005A71 51%, #D7F7FF);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    align-items: center;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    padding: 0 20px;
+  }
+  
+  /* === TITLE (KIRI) === */
+  .title-container {
+    z-index: 2;
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    padding-right: 40px;
+    padding-left: 60px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 60%;
+    transform: translateZ(0);
+  }
+  
+  .title-container h1 {
+    font-size: 3rem;
+    color: white;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 25px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  .title-container p {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.3rem;
+    margin-bottom: 35px;
+    line-height: 1.6;
+    max-width: 500px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* === BUTTONS === */
+  .button-group {
+    display: flex;
+    gap: 25px;
+  }
+  
+  button {
+    background-color: #ffffff;
+    color: #005A71;
+    border: none;
+    padding: 18px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .button-group .Layanan-button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+  
+  .button-group .Layanan-button:hover {
+    background-color: white;
+    color: #005A71;
+  }
+  
+  /* === IMAGE (KANAN) === */
+  .hero-image {
+    flex: 0.8;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-left: 40px;
+    padding-right: 0;
+    padding-bottom: 0;
+    position: relative;
+    overflow: visible;
+    height: 100vh;
+  }
+
+  .hero-image img {
+    width: 100%;
+    max-width: 650px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    position: absolute;
+    right: -120px;
+    bottom: 0;
+  }
+
+  /* === RESPONSIVE DESIGN === */
+  @media (max-width: 768px) {
+    .hero-content {
+      flex-direction: column;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .title-container {
+      width: 100%;
+      padding-right: 0;
+      padding-left: 0;
+      margin-bottom: 30px;
+    }
+    
+    .title-container h1 {
+      font-size: 2rem;
+    }
+    
+    .title-container p {
+      font-size: 1rem;
+    }
+    
+    .hero-image {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .hero-image img {
+      max-width: 300px;
+      right: 0;
+      bottom: 0;
+      position: relative;
+    }
+    
+    button {
+      padding: 15px 25px;
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .title-container h1 {
+      font-size: 3.5rem;
+    }
+    
+    .title-container p {
+      font-size: 1.4rem;
+    }
+    
+    .hero-image img {
+      max-width: 750px;
+      right: -140px;
+      bottom: 0;
+    }
+  }

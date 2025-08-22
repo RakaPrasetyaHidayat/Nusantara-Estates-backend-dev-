@@ -1,0 +1,354 @@
+.admin-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+/* Header Styles */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.admin-header h1 {
+  font-size: 1.8rem;
+  color: #333333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.add-property-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.add-property-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.add-property-btn:active {
+  transform: translateY(0);
+}
+
+.plus-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Table Styles */
+.property-table-container {
+  padding: 0 2rem 2rem;
+}
+
+.property-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.property-table th {
+  background-color: #f1f3f5;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.property-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.sortable-header:hover {
+  background-color: #e9ecef;
+}
+
+/* Property Content Styles */
+.property-image img {
+  width: 100px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.property-spec h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.property-spec p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.property-facilities {
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.property-price {
+  font-weight: 600;
+  color: #28a745;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.detail-btn {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.detail-btn:hover {
+  background-color: #138496;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+/* Loading and Error States */
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 120px);
+}
+
+.error-message {
+  color: #dc3545;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.modal p {
+  margin-bottom: 1.5rem;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.confirm-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.confirm-btn:hover {
+  background-color: #c82333;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .property-table-container {
+    padding: 0 1rem 1rem;
+  }
+  
+  .property-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .detail-btn,
+  .edit-btn,
+  .delete-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .add-property-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* Tambahkan style ini */
+.property-spec h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.property-spec p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.spec-details {
+  margin-top: 0.5rem;
+}
+
+.spec-details p {
+  margin: 0.25rem 0;
+  font-size: 0.8rem;
+  color: #495057;
+}
+
+.property-facilities p {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.property-facilities p:first-child {
+  margin-top: 0;
+}
+
+.property-facilities p:last-child {
+  margin-bottom: 0;
+}

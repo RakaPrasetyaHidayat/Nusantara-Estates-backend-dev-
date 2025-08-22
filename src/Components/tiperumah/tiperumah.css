@@ -1,0 +1,341 @@
+body {
+  background: #D7F7FF;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 16px;
+    background-color: #D7F7FF;
+  }
+  
+  .tipe-header {
+    text-align: left;
+    padding-left: 16px;
+    margin-left: 35px;
+  }
+  
+  .section-title {
+    text-align: center;
+    color: #23455b;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .section-subtitle {
+    text-align: center;
+    color: #23455b;
+    margin-bottom: 32px;
+    margin-top: 4px;
+    font-size: 0.95rem;
+  }
+  
+  .card-list {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .card-list::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    width: 280px;
+    min-width: 280px;
+    height: 453px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    background: linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+
+  .card:hover .card-body h3,
+  .card:hover .card-body p,
+  .card:hover .status {
+    color: #1565C0;
+  }
+
+  .card:hover .info-detail span {
+    color: #0D47A1;
+  }
+
+  .card:hover .btn-detail {
+    background: #fff;
+    color: #0D47A1;
+    border-color: #0D47A1;
+    font-weight: 600;
+  }
+
+  .card:hover .btn-chat {
+    background: #0D47A1;
+    transform: scale(1.05);
+  }
+  
+  .card img {
+    width: 100%;
+    /* height: 282px; */
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover img {
+    transform: scale(1.05);
+  }
+  
+  .card-body {
+    padding: 18px 16px 12px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-body h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.1rem;
+    color: #222;
+  }
+  
+  .card-body p {
+    margin: 0 0 2px 0;
+    color: #444;
+    font-size: 0.98rem;
+  }
+  
+  .status {
+    color: #23455b;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  
+  .card-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .btn-detail, .btn-chat {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 0.97rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-detail {
+    background: #fff;
+    color: #23455b;
+    border: 1.5px solid #23455b;
+    width: 50%;
+  }
+  
+  .btn-detail:hover {
+    background: #e0f7fa;
+  }
+  
+  .btn-chat {
+    background: #005A71;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+     width: 50%;
+  }
+  
+  .btn-chat:hover {
+    background: #23455b;
+  }
+  
+  .btn-lihat-lainnya {
+    display: block;
+    margin: 0 auto 32px auto;
+    background: #23455b;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 32px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-lihat-lainnya:hover {
+    background: #23455b;
+  }
+  
+  .tipe-title {
+    margin-top: 40px;
+  }
+  
+  .tipe-list-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .arrow-btn {
+    background: #1db5c9;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 2;
+  }
+  
+  .arrow-btn:hover {
+    background: #1596a7;
+  }
+  
+  .tipe-list {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 12px 0;
+    min-width: 0;
+    scrollbar-width: none;
+  }
+  
+  .tipe-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    min-width: 330px;
+    max-width: 330px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .tipe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .tipe-card img {
+    width: 100%;
+    height: 304px;
+    object-fit: cover;
+  }
+  
+  .tipe-caption {
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    backdrop-filter: blur(5px);
+  }
+
+  .tipe-description {
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    padding: 8px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+  }
+
+  .tipe-card:hover .tipe-description {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .tipe-card:hover .tipe-caption {
+    background: rgba(0,0,0,0.9);
+  }
+  
+  @media (max-width: 1200px) {
+    .card-list {
+      justify-content: flex-start;
+      padding: 0 20px;
+    }
+    .card {
+      width: 260px;
+      min-width: 260px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .card-list {
+      justify-content: flex-start;
+      padding: 0 15px;
+    }
+    .card {
+      width: 240px;
+      min-width: 240px;
+    }
+    .tipe-list {
+      gap: 10px;
+    }
+    .tipe-card {
+      min-width: 180px;
+      max-width: 180px;
+    }
+    .arrow-btn img {
+      display: block;
+      margin: auto;
+      width: 28px;
+      height: 28px;
+      pointer-events: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .card-list {
+      gap: 10px;
+      padding: 0 10px;
+    }
+    .card {
+      width: 220px;
+      min-width: 220px;
+    }
+  }
