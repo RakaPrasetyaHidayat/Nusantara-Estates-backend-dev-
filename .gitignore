@@ -58,3 +58,4 @@ ehthumbs.db
 # Build artifacts
 build/
 coverage/
+.vercel

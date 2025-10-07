@@ -6,19 +6,40 @@ import pool from './db.js';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import { authenticateToken, requireAdmin, generateToken } from './middleware/auth.js';
+import { validateRegistrationData, sanitizeInput } from './utils/validation.js';
+import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 5174;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
+// Allow multiple origins (frontend local and deployed)
+const DEFAULT_ORIGINS = [process.env.FRONTEND_URL || 'http://localhost:5173'];
+if (process.env.ADDITIONAL_ORIGINS) {
+  // comma separated list
+  const extras = process.env.ADDITIONAL_ORIGINS.split(',').map(s => s.trim()).filter(Boolean);
+  DEFAULT_ORIGINS.push(...extras);
+}
 
-// ---------- Middleware global ----------
 app.use(express.json());
 app.use(
   cors({
-    origin: CLIENT_ORIGIN,
+    origin: (origin, callback) => {
+      // Allow requests with no origin like mobile apps or curl
+      if (!origin) return callback(null, true);
+      if (process.env.FRONTEND_URL === '*') return callback(null, true);
+      if (DEFAULT_ORIGINS.includes(origin)) return callback(null, true);
+      // Allow vercel apps (e.g. https://my-app.vercel.app)
+      try {
+        const url = new URL(origin);
+        if (url.hostname && url.hostname.endsWith('.vercel.app')) return callback(null, true);
+      } catch (e) {
+        // ignore parse errors
+      }
+      // Deny CORS but do not throw an exception here (just false)
+      return callback(null, false);
+    },
     credentials: true,
   })
 );
@@ -86,8 +107,50 @@ const rowToProperty = (row) => ({
 });
 
 // ============================================================
-// AUTH: Login
+// AUTH: Register & Login
 // ============================================================
+
+// Register user baru
+app.post('/api/register', async (req, res) => {
+  try {
+    const payload = {
+      username: sanitizeInput(req.body?.username || ''),
+      email: sanitizeInput(req.body?.email || ''),
+      password: req.body?.password || '',
+      confirmPassword: req.body?.confirmPassword || req.body?.password || ''
+    };
+
+    const { isValid, errors } = validateRegistrationData(payload);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Validasi gagal', errors });
+    }
+
+    // cek eksisting
+    const [exists] = await pool.query(
+      'SELECT id FROM users WHERE username = ? OR email = ?',
+      [payload.username, payload.email]
+    );
+    if (exists.length) {
+      return res.status(409).json({ success: false, message: 'Username atau email sudah terdaftar' });
+    }
+
+    // hash password
+    const hashed = await bcrypt.hash(payload.password, 10);
+
+    const [result] = await pool.query(
+      `INSERT INTO users (username, email, password, role, is_active, email_verified, created_at, updated_at)
+       VALUES (?, ?, ?, 'user', 1, 0, NOW(), NOW())`,
+      [payload.username, payload.email, hashed]
+    );
+
+    return res.status(201).json({ success: true, message: 'Registrasi berhasil', id: result.insertId });
+  } catch (error) {
+    console.error('Error register:', error);
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
+  }
+});
+
+// Login
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body || {};
@@ -127,16 +190,34 @@ app.post('/api/login', async (req, res) => {
 
     // User biasa dari database
     const [users] = await pool.query(
-      'SELECT id, username, email, password FROM users WHERE username = ? OR email = ?',
+      'SELECT id, username, email, password, role, is_active, email_verified FROM users WHERE username = ? OR email = ?',
       [username, username]
     );
-    if (!users.length || users[0].password !== password) {
+    if (!users.length) {
       return res
         .status(401)
         .json({ success: false, message: 'Kredensial tidak valid' });
     }
 
     const user = users[0];
+    let isValid = false;
+    if (user.password && user.password.startsWith('$2')) {
+      // bcrypt hash detected
+      isValid = await bcrypt.compare(password, user.password);
+    } else {
+      // fallback plaintext for legacy accounts
+      isValid = user.password === password;
+    }
+
+    if (!isValid) {
+      return res
+        .status(401)
+        .json({ success: false, message: 'Kredensial tidak valid' });
+    }
+
+    if (user.is_active === 0) {
+      return res.status(403).json({ success: false, message: 'Akun tidak aktif' });
+    }
     await pool.query('UPDATE users SET last_login = NOW() WHERE id = ?', [
       user.id,
     ]);
@@ -145,8 +226,8 @@ app.post('/api/login', async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      role: 'user',
-      isAdmin: false,
+      role: user.role || 'user',
+      isAdmin: (user.role || 'user') === 'admin',
     };
     const token = generateToken(userResponse);
     res.json({
@@ -166,14 +247,73 @@ app.post('/api/login', async (req, res) => {
 // ============================================================
 // PUBLIC ROUTES (Homepage, DetailRumah)
 // ============================================================
-app.get('/api/properties', async (_req, res) => {
+
+// Test DB connection (untuk frontend /health)
+app.get('/api/test-db', async (_req, res) => {
   try {
-    const [rows] = await pool.query(
-      `SELECT * FROM properties 
-       WHERE status IN ('Dijual','Disewa','Tersedia') 
-       ORDER BY featured DESC, id DESC`
-    );
+    const [rows] = await pool.query('SELECT 1 AS ok');
+    res.json({ success: true, message: 'Database OK', data: rows[0] });
+  } catch (error) {
+    console.error('DB test error:', error);
+    res.status(500).json({ success: false, message: 'Database error' });
+  }
+});
+
+// Search rumah (backward compatibility)
+app.post('/api/search-rumah', async (req, res) => {
+  try {
+    const { lokasi, tipe } = req.body || {};
+    const params = [];
+    const whereParts = ["status IN ('Dijual','Disewa','Terjual')"]; // mengikuti schema
+    if (tipe && tipe !== 'Semua Tipe') {
+      whereParts.push('property_type = ?');
+      params.push(tipe);
+    }
+    if (lokasi && String(lokasi).trim() !== '') {
+      whereParts.push('location LIKE ?');
+      params.push(`%${lokasi}%`);
+    }
+    const whereClause = whereParts.length ? 'WHERE ' + whereParts.join(' AND ') : '';
+    const [rows] = await pool.query(`SELECT * FROM properties ${whereClause} ORDER BY id DESC LIMIT 50`, params);
     res.json({ success: true, data: rows.map(rowToProperty) });
+  } catch (error) {
+    console.error('Error search:', error);
+    res.status(500).json({ success: false, message: 'Gagal mencari properti' });
+  }
+});
+
+app.get('/api/properties', async (req, res) => {
+  try {
+    const { tipe, lokasi, page = 1, limit = 10 } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
+
+    const whereParts = ["status IN ('Dijual','Disewa','Terjual')"]; // sesuaikan dengan schema
+    const params = [];
+
+    if (tipe && tipe !== 'Semua Tipe') {
+      whereParts.push('property_type = ?');
+      params.push(tipe);
+    }
+    if (lokasi && String(lokasi).trim() !== '') {
+      whereParts.push('location LIKE ?');
+      params.push(`%${lokasi}%`);
+    }
+
+    const whereClause = whereParts.length ? 'WHERE ' + whereParts.join(' AND ') : '';
+
+    const [rows] = await pool.query(
+      `SELECT * FROM properties ${whereClause}
+       ORDER BY featured DESC, id DESC
+       LIMIT ? OFFSET ?`,
+      [...params, Number(limit), offset]
+    );
+
+    const [[{ total }]] = await pool.query(
+      `SELECT COUNT(*) as total FROM properties ${whereClause}`,
+      params
+    );
+
+    res.json({ success: true, data: rows.map(rowToProperty), page: Number(page), limit: Number(limit), total });
   } catch (error) {
     console.error('Error list publik:', error);
     res.status(500).json({ success: false, message: 'Gagal mengambil properti' });
@@ -188,7 +328,10 @@ app.get('/api/properties/:id', async (req, res) => {
     if (!rows.length) {
       return res.status(404).json({ success: false, message: 'Properti tidak ditemukan' });
     }
-    res.json({ success: true, data: rowToProperty(rows[0]) });
+    const prop = rowToProperty(rows[0]);
+    // ensure images is array for frontend
+    prop.images = Array.isArray(prop.images) ? prop.images : (prop.images ? [prop.images] : []);
+    res.json({ success: true, data: prop });
   } catch (error) {
     console.error('Error detail publik:', error);
     res.status(500).json({ success: false, message: 'Gagal mengambil detail properti' });
@@ -287,14 +430,22 @@ app.get(
   '/api/admin/properties',
   authenticateToken,
   requireAdmin,
-  async (_req, res) => {
+  async (req, res) => {
     try {
+      const page = Number(req.query.page || 1);
+      const limit = Number(req.query.limit || 20);
+      const offset = (page - 1) * limit;
       const [rows] = await pool.query(
-        'SELECT * FROM properties ORDER BY id DESC'
+        'SELECT * FROM properties ORDER BY id DESC LIMIT ? OFFSET ?',
+        [limit, offset]
       );
+      const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM properties');
       res.json({
         success: true,
         data: rows.map(rowToProperty),
+        page,
+        limit,
+        total
       });
     } catch (error) {
       console.error('Error list properti:', error);
@@ -304,6 +455,19 @@ app.get(
     }
   }
 );
+
+// Admin stats sederhana
+app.get('/api/admin/stats', authenticateToken, requireAdmin, async (_req, res) => {
+  try {
+    const [[{ users }]] = await pool.query('SELECT COUNT(*) as users FROM users');
+    const [[{ properties }]] = await pool.query('SELECT COUNT(*) as properties FROM properties');
+    const [[{ featured }]] = await pool.query("SELECT COUNT(*) as featured FROM properties WHERE featured = 1");
+    res.json({ success: true, data: { users, properties, featured } });
+  } catch (error) {
+    console.error('Error stats:', error);
+    res.status(500).json({ success: false, message: 'Gagal mengambil statistik' });
+  }
+});
 
 // Detail
 app.get(

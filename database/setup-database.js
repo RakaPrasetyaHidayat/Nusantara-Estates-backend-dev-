@@ -2,19 +2,22 @@ import mysql from 'mysql2/promise';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function setupDatabase() {
   let connection;
-  
+
   try {
     // Koneksi ke MySQL tanpa database terlebih dahulu
     connection = await mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: ''
+      host: process.env.DB_HOST || 'localhost',
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || ''
     });
 
     console.log('✅ Terhubung ke MySQL server');
@@ -26,45 +29,56 @@ async function setupDatabase() {
     // Gunakan database
     await connection.query('USE nusantara_estates');
 
-    // Buat tabel users
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-      )
-    `;
-    
-    await connection.query(createTableQuery);
-    console.log('✅ Tabel users berhasil dibuat');
+    // Baca file SQL dan jalankan
+    const sqlFilePath = path.join(__dirname, 'database_setup.sql');
+    const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
 
-    // Insert sample data dengan IGNORE untuk menghindari duplicate
-    try {
-      await connection.query(
-        "INSERT IGNORE INTO users (username, email, password) VALUES ('admin', 'admin@example.com', 'admin123')"
-      );
-      
-      await connection.query(
-        "INSERT IGNORE INTO users (username, email, password) VALUES ('user1', 'user1@example.com', 'password123')"
-      );
-      
-      console.log('✅ Sample data berhasil diinsert');
-    } catch (insertError) {
-      console.log('ℹ️ Sample data sudah ada atau error insert:', insertError.message);
+    // Split SQL commands dan jalankan satu per satu
+    const sqlCommands = sqlContent.split(';').filter(cmd => cmd.trim().length > 0);
+
+    for (const command of sqlCommands) {
+      const trimmedCommand = command.trim();
+      if (trimmedCommand) {
+        try {
+          await connection.query(trimmedCommand);
+          console.log('✅ SQL command executed successfully');
+        } catch (sqlError) {
+          // Ignore duplicate table/key errors
+          if (sqlError.code !== 'ER_TABLE_EXISTS_ERROR' && sqlError.code !== 'ER_DUP_KEYNAME') {
+            console.log('⚠️ SQL command warning:', sqlError.message);
+          }
+        }
+      }
     }
 
+    console.log('✅ Semua tabel berhasil dibuat');
+
+    // Insert sample user untuk testing
+    try {
+      // Hash password untuk user biasa
+      const bcrypt = (await import('bcryptjs')).default;
+      const hashedPassword = await bcrypt.hash('password123', 10);
+
+      await connection.query(
+        `INSERT IGNORE INTO users (username, email, password, role, is_active, email_verified)
+         VALUES (?, ?, ?, 'user', 1, 0)`,
+        ['testuser', 'test@example.com', hashedPassword]
+      );
+
+      console.log('✅ Sample user berhasil diinsert: testuser / password123');
+    } catch (insertError) {
+      console.log('ℹ️ Sample user sudah ada atau error insert:', insertError.message);
+    }
 
     console.log('\n🎉 Database setup selesai!');
     console.log('\nAnda bisa login dengan:');
-    console.log('- Username: admin, Password: admin123');
-    console.log('- Username: user1, Password: password123');
+    console.log('- Admin: NEadmin / BARA211 (hardcoded)');
+    console.log('- User: testuser / password123');
+    console.log('\nUntuk setup properties, jalankan: npm run setup-properties');
 
   } catch (error) {
     console.error('❌ Error setting up database:', error.message);
-    
+
     if (error.code === 'ECONNREFUSED') {
       console.log('\n💡 Pastikan MySQL server sudah berjalan!');
       console.log('   - Jalankan XAMPP/WAMP/MAMP');
