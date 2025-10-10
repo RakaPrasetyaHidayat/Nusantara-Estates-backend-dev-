@@ -1,30 +1,41 @@
--- Database setup untuk Nusantara Estates
-CREATE DATABASE IF NOT EXISTS nusantara_estates;
-USE nusantara_estates;
+-- Database setup untuk Nusantara Estates (Supabase otomatis buatkan schema public)
+-- Tidak perlu CREATE DATABASE, cukup gunakan schema default
 
 -- Membuat tabel users untuk sistem login dan register
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('user', 'admin') DEFAULT 'user',
+    role VARCHAR(10) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
     is_active BOOLEAN DEFAULT TRUE,
     email_verified BOOLEAN DEFAULT FALSE,
     last_login TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_username (username),
-    INDEX idx_email (email),
-    INDEX idx_created_at (created_at)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_role CHECK (role IN ('user', 'admin'))
 );
+
+-- Trigger agar updated_at otomatis update saat ada perubahan
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = NOW();
+   RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER trigger_users_updated_at
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
 
 -- Membuat tabel properties untuk data properti
 CREATE TABLE IF NOT EXISTS properties (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    price DECIMAL(15,2) NOT NULL,
+    price NUMERIC(15,2) NOT NULL,
     price_formatted VARCHAR(50),
     location VARCHAR(255),
     address VARCHAR(255),
@@ -34,29 +45,40 @@ CREATE TABLE IF NOT EXISTS properties (
     building_area INT DEFAULT 0,
     property_type VARCHAR(100) DEFAULT 'house',
     house_type VARCHAR(100),
-    status ENUM('Dijual', 'Disewa', 'Terjual') DEFAULT 'Dijual',
+    status VARCHAR(20) DEFAULT 'Dijual' CHECK (status IN ('Dijual', 'Disewa', 'Terjual')),
     featured BOOLEAN DEFAULT FALSE,
     image_url VARCHAR(500),
-    images JSON,
+    images JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_price (price),
-    INDEX idx_location (location),
-    INDEX idx_property_type (property_type),
-    INDEX idx_house_type (house_type),
-    INDEX idx_status (status),
-    INDEX idx_featured (featured)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TRIGGER trigger_properties_updated_at
+BEFORE UPDATE ON properties
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
 
 -- Membuat tabel user_sessions untuk tracking sessions
 CREATE TABLE IF NOT EXISTS user_sessions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash VARCHAR(255) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_user_id (user_id),
-    INDEX idx_token_hash (token_hash),
-    INDEX idx_expires_at (expires_at)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Membuat index untuk mempercepat query
+CREATE INDEX idx_username ON users(username);
+CREATE INDEX idx_email ON users(email);
+CREATE INDEX idx_created_at ON users(created_at);
+
+CREATE INDEX idx_price ON properties(price);
+CREATE INDEX idx_location ON properties(location);
+CREATE INDEX idx_property_type ON properties(property_type);
+CREATE INDEX idx_house_type ON properties(house_type);
+CREATE INDEX idx_status ON properties(status);
+CREATE INDEX idx_featured ON properties(featured);
+
+CREATE INDEX idx_user_id ON user_sessions(user_id);
+CREATE INDEX idx_token_hash ON user_sessions(token_hash);
+CREATE INDEX idx_expires_at ON user_sessions(expires_at);

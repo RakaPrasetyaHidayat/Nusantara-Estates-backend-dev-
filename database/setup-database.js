@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import pkg from 'pg';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -6,28 +6,31 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const { Client } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function setupDatabase() {
-  let connection;
+  let client;
 
   try {
-    // Koneksi ke MySQL tanpa database terlebih dahulu
-    connection = await mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || ''
-    });
+    // Extract project ref from SUPABASE_URL
+    const supabaseUrl = process.env.SUPABASE_URL;
+    if (!supabaseUrl) {
+      throw new Error('SUPABASE_URL not found in environment variables');
+    }
+    const projectRef = supabaseUrl.match(/https:\/\/([^.]+)\.supabase\.co/)?.[1];
+    if (!projectRef) {
+      throw new Error('Could not extract project ref from SUPABASE_URL');
+    }
 
-    console.log('✅ Terhubung ke MySQL server');
+    // Create connection string for direct PostgreSQL access
+    const connectionString = `postgresql://postgres:${process.env.SUPABASE_SERVICE_ROLE_KEY}@db.${projectRef}.supabase.co:5432/postgres`;
 
-    // Buat database jika belum ada
-    await connection.query('CREATE DATABASE IF NOT EXISTS nusantara_estates');
-    console.log('✅ Database nusantara_estates sudah siap');
+    client = new Client({ connectionString });
+    await client.connect();
 
-    // Gunakan database
-    await connection.query('USE nusantara_estates');
+    console.log('✅ Terhubung ke Supabase PostgreSQL database');
 
     // Baca file SQL dan jalankan
     const sqlFilePath = path.join(__dirname, 'database_setup.sql');
@@ -40,11 +43,11 @@ async function setupDatabase() {
       const trimmedCommand = command.trim();
       if (trimmedCommand) {
         try {
-          await connection.query(trimmedCommand);
+          await client.query(trimmedCommand);
           console.log('✅ SQL command executed successfully');
         } catch (sqlError) {
-          // Ignore duplicate table/key errors
-          if (sqlError.code !== 'ER_TABLE_EXISTS_ERROR' && sqlError.code !== 'ER_DUP_KEYNAME') {
+          // Ignore duplicate table/key errors for PostgreSQL
+          if (sqlError.code !== '42P07' && sqlError.code !== '42710') { // duplicate_table, duplicate_object
             console.log('⚠️ SQL command warning:', sqlError.message);
           }
         }
@@ -59,9 +62,10 @@ async function setupDatabase() {
       const bcrypt = (await import('bcryptjs')).default;
       const hashedPassword = await bcrypt.hash('password123', 10);
 
-      await connection.query(
-        `INSERT IGNORE INTO users (username, email, password, role, is_active, email_verified)
-         VALUES (?, ?, ?, 'user', 1, 0)`,
+      await client.query(
+        `INSERT INTO users (username, email, password, role, is_active, email_verified)
+         VALUES ($1, $2, $3, 'user', true, false)
+         ON CONFLICT (username) DO NOTHING`,
         ['testuser', 'test@example.com', hashedPassword]
       );
 
@@ -80,13 +84,11 @@ async function setupDatabase() {
     console.error('❌ Error setting up database:', error.message);
 
     if (error.code === 'ECONNREFUSED') {
-      console.log('\n💡 Pastikan MySQL server sudah berjalan!');
-      console.log('   - Jalankan XAMPP/WAMP/MAMP');
-      console.log('   - Atau start MySQL service');
+      console.log('\n💡 Pastikan koneksi internet stabil dan kredensial Supabase benar!');
     }
   } finally {
-    if (connection) {
-      await connection.end();
+    if (client) {
+      await client.end();
     }
   }
 }

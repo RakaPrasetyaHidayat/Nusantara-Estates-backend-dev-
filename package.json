@@ -9,9 +9,11 @@
     "server:no-db": "node server/app-no-db.js",
     "start:dev": "node scripts/start-dev.js",
     "setup-db": "node database/setup-database.js",
+    "create-admin": "node scripts/create-admin.js",
     "reset-db": "node database/reset-database.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.10.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -20,11 +22,11 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.14.3",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "pg": "^8.11.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "vercel": "^48.2.9"
   }
 }
