@@ -35,9 +35,7 @@ Guest :
 ------------------ Pages -----------------------
 Berisi Page apa saja yang akan ditampilkan kepada pengguna    
 
------------------- Admin -------------------
-Username NE Administrator
-Password BARA@ssmm123 
+
 
 
 
