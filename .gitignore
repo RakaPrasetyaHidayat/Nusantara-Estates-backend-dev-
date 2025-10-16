@@ -13,7 +13,11 @@ dist-ssr
 *.local
 
 # Environment variables
+<<<<<<< HEAD
 # .env
+=======
+.env
+>>>>>>> 19960360f909724d0693982df5be8cef87f61bde
 .env.local
 .env.development.local
 .env.test.local
@@ -58,3 +62,7 @@ ehthumbs.db
 # Build artifacts
 build/
 coverage/
+<<<<<<< HEAD
+=======
+.vercel
+>>>>>>> 19960360f909724d0693982df5be8cef87f61bde
