@@ -1,8 +1,9 @@
 
 import supabaseAdmin from '../../_supabase.js';
 import { requireAdmin } from '../../_auth.js';
+import withCors from '../../_cors.js';
 
-export default async function handler(req, res) {
+export default withCors(async function handler(req, res) {
   try {
     const { id } = req.query || {};
     if (!id) return res.status(400).json({ success: false, message: 'ID required' });
@@ -140,4 +141,4 @@ export default async function handler(req, res) {
     console.error('admin property detail error (supabase):', err);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
-}
+});

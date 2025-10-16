@@ -2,13 +2,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import supabaseAdmin from './_supabase.js';
+import withCors from './_cors.js';
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 const JWT_EXPIRES = process.env.JWT_EXPIRES_IN || '1h';
 
-export default async function handler(req, res) {
+export default withCors(async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ success: false, message: 'Method not allowed' });
   try {
     const { username, password } = req.body || {};
@@ -51,4 +52,4 @@ export default async function handler(req, res) {
     console.error('Login error (api/login):', err);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
-}
+});

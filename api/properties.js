@@ -1,9 +1,10 @@
 import dotenv from 'dotenv';
 import supabaseAdmin from './_supabase.js';
+import withCors from './_cors.js';
 
 dotenv.config();
 
-export default async function handler(req, res) {
+export default withCors(async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ success: false, message: 'Method not allowed' });
   try {
     const { tipe, lokasi, page = 1, limit = 10 } = req.query || {};
@@ -34,4 +35,4 @@ export default async function handler(req, res) {
     console.error('properties list error (api/properties):', err);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
-}
+});

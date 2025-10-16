@@ -1,7 +1,8 @@
 import supabaseAdmin from '../../_supabase.js';
 import { requireAdmin } from '../../_auth.js';
+import withCors from '../../_cors.js';
 
-export default async function handler(req, res) {
+export default withCors(async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const auth = requireAdmin(req);
@@ -57,4 +58,4 @@ export default async function handler(req, res) {
     console.error('admin properties error (serverless):', err);
     return res.status(500).json({ success: false, message: 'Server error' });
   }
-}
+});
